@@ -37,16 +37,27 @@ public final class ServerMainThread {
   public static void main(final String[] args) {
     System.out.println("Running the server 6");
 
+    // O objeto Map vai simular um banco de dados em que
+    // vai armazenar um id do tipo Long um objeto Serializable
     Map<Long, Serializable> database = new HashMap<Long, Serializable>();
+    // instancia um objeto do tipo ServerSocket
     ServerSocket serverSocket = null;
+    // criar uma flag para ficar "ouvindo" o endereço host e a porta
+    // que estão no serverSocket
     boolean listening = true;
     try {
+      // inicializa o serverSocket passando a porta através do DAO.PORT
       serverSocket = new ServerSocket(DAO.PORT);
+      // Enquanto o servidor estiver "ouvindo" faça...
       while (listening) {
+        // Cria uma nova thread que gerencia a conexão
+        // e o banco de dados
         new ConnectionHandlerThread(serverSocket.accept(), database).start();
       }
+      // ao fianlizar a thread é necessário fechar a conexão
       serverSocket.close();
     } catch (IOException e) {
+      // caso dê algum erro, imprimir o erro
       e.printStackTrace();
       System.exit(-1);
     }
